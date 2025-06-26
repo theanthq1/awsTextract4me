@@ -6,7 +6,7 @@ from botocore.awsrequest import AWSRequest
 app = Flask(__name__)
 
 # Use environment variables in production
-AWS_REGION = 'us-west-1'
+AWS_REGION = 'us-east-2'
 SERVICE = 'textract'
 
 session = boto3.Session()
