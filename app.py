@@ -1,14 +1,12 @@
 from flask import Flask, request, jsonify
-import boto3, json, requests
+import boto3, json, requests, os
 from botocore.auth import SigV4Auth
 from botocore.awsrequest import AWSRequest
 
 app = Flask(__name__)
 
-# Use environment variables in production
 AWS_REGION = 'us-east-2'
 SERVICE = 'textract'
-
 session = boto3.Session()
 
 @app.route("/textract-proxy", methods=["POST"])
@@ -33,7 +31,12 @@ def textract_proxy():
     SigV4Auth(creds, SERVICE, AWS_REGION).add_auth(aws_req)
 
     resp = requests.post(aws_req.url, headers=dict(aws_req.headers), data=payload)
-    return jsonify(resp.json()), resp.status_code
+
+    try:
+        return jsonify(resp.json()), resp.status_code
+    except Exception:
+        return resp.text, resp.status_code
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
