@@ -29,12 +29,12 @@ def textract_proxy():
 
     creds = session.get_credentials().get_frozen_credentials()
     SigV4Auth(creds, SERVICE, AWS_REGION).add_auth(aws_req)
-print("=== Target ===", target)
-print("=== Payload ===", payload)
-print("=== Headers ===", dict(aws_req.headers))
-print("=== Response ===", resp.status_code, resp.text)
-    resp = requests.post(aws_req.url, headers=dict(aws_req.headers), data=payload)
 
+    resp = requests.post(aws_req.url, headers=dict(aws_req.headers), data=payload)
+    print("=== Target ===", target)
+    print("=== Payload ===", payload)
+    print("=== Headers ===", dict(aws_req.headers))
+    print("=== Response ===", resp.status_code, resp.text)
     try:
         return jsonify(resp.json()), resp.status_code
     except Exception:
